@@ -1,0 +1,13 @@
+# Ignore the following directories and file(s).
+
+
+# Directory
+include/
+obj/
+tests/
+
+# File(s)
+*.exe
+*.o
+
+
