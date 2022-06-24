@@ -1,4 +1,5 @@
 #include <getopt.h>
+#include "functions.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -41,7 +42,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
+	if (make_pds(argv[1]) != 0) {goto cpps_error;}
+
 	return 0;
+
+	cpps_error:;
+	return 1;
 }
 
 
