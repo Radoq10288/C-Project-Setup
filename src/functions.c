@@ -7,6 +7,22 @@
 #include <string.h>
 
 
+int make_pds(char *project_name) {
+	char *bin_dir_location = "projectname\\bin";
+	char *src_dir_location = "projectname\\src";
+
+	if (_mkdir(project_name)) {
+		fprintf(stderr, "cpps\nerror: Directory \"%s\" already exist.\n", project_name);
+		return EXIT_FAILURE;
+	}
+	bin_dir_location = strrep(bin_dir_location, "projectname", project_name);
+	_mkdir(bin_dir_location);
+	src_dir_location = strrep(src_dir_location, "projectname", project_name);
+	_mkdir(src_dir_location);
+	return 0;
+}
+
+
 static char *result_string;
 
 
