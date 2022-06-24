@@ -7,6 +7,48 @@
 #include <string.h>
 
 
+int make_csf(char *file_name) {
+	char *file_content = {
+		"/* File:         \n"
+		" *\n"
+		" * Author:       \n"
+		" *\n"
+		" * Date & time:  \n"
+		" */\n"
+		"\n"
+		"#include <stdio.h>\n"
+		"\n"
+		"\n"
+		"int main() {\n"
+		"    // Your code goes here...\n"
+		"    return 0;\n"
+		"}\n"
+		"\n"
+		"\n"
+	};
+	char new_file_name[260];
+	FILE *new_c_file;
+
+	strcpy(new_file_name, file_name);
+	strcat(new_file_name, ".c");
+	if ((new_c_file = fopen(new_file_name, "r")) == NULL) {
+		if ((new_c_file = fopen(new_file_name, "w")) == NULL) {
+			fprintf(stderr, "cpps\nerror: Failed to create the file \"%s\".\n", new_file_name);
+			return EXIT_FAILURE;
+		}
+		fputs(file_content, new_c_file);
+		fclose(new_c_file);
+	}
+	else {
+		fprintf(stderr, "cpps\nerror: The file \"%s\" already exist.\n", new_file_name);
+		fclose(new_c_file);
+		return EXIT_FAILURE;
+	}
+
+	return 0;
+}
+
+
 int make_pds(char *project_name) {
 	char *bin_dir_location = "projectname\\bin";
 	char *src_dir_location = "projectname\\src";
