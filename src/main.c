@@ -1,4 +1,5 @@
 #include <getopt.h>
+#include <io.h>
 #include "functions.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -6,9 +7,12 @@
 
 
 int main(int argc, char *argv[]) {
-	char exe_filename[260], c_source_filename[260] = "main", c_source_file_loc[260] = "projectname\\src\\";
+	char c_source_filename[260] = "main", c_source_file_loc[260] = "projectname\\src\\",
+		 exe_filename[260], project_name[260];
 	int getopt_status;
 
+	strcpy(project_name, argv[1]);
+	strcpy(exe_filename, argv[1]);
 	while(true) {
         int option_index = 0;
         static struct option long_options[] = {
@@ -27,7 +31,6 @@ int main(int argc, char *argv[]) {
 		switch(getopt_status) {
 			case 'e':
 				strcpy(exe_filename, optarg);
-				printf("Executable file name is: %s\n", exe_filename);
 				break;
 			case 'f':
 				strcpy(c_source_filename, optarg);
@@ -41,11 +44,15 @@ int main(int argc, char *argv[]) {
         }
     }
 
-	if (make_pds(argv[1]) != 0) {goto cpps_error;}
+	if (make_pds(project_name) != 0) {goto cpps_error;}
 
 	strcat(c_source_file_loc, c_source_filename);
-	strcpy(c_source_file_loc, strrep(c_source_file_loc, "projectname", argv[1]));
+	strcpy(c_source_file_loc, strrep(c_source_file_loc, "projectname", project_name));
 	if (make_csf(c_source_file_loc) != 0) {goto cpps_error;}
+
+	_chdir(project_name);
+	if (make_makefile(exe_filename) != 0) {goto cpps_error;}
+	_chdir("..");
 
 	return 0;
 
