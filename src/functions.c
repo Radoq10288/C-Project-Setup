@@ -49,6 +49,60 @@ int make_csf(char *file_name) {
 }
 
 
+int make_makefile(char *exe_name) {
+	char *file_content = {
+		"BINDIR=bin\n"
+		"OBJDIR=obj\n"
+		"SRCDIR=src\n"
+		"\n"
+		"BIN=$(BINDIR)/exename\n"
+		"OBJ=$(OBJDIR)/*.o\n"
+		"CFILES=$(SRCDIR)/*.c\n"
+		"\n"
+		"CC=mingw32-gcc-9.2.0\n"
+		"\n"
+		"debug: CFLAGS=-g -pedantic -Wall\n"
+		"debug: build compile\n"
+		"\n"
+		"release: CFLAGS=-O2 -Wall\n"
+		"release: build compile\n"
+		"\n"
+		"compile: $(BIN)\n"
+		"$(BIN) : $(OBJ)\n"
+		"\t$(CC) -o $(BIN) $(OBJ)\n"
+		"\n"
+		"build: $(OBJ)\n"
+		"$(OBJ) : $(CFILES)\n"
+		"\t$(CC) -c $(CFILES) $(CFLAGS)\n"
+		"\n"
+		"\t@mkdir -p $(OBJDIR)\n"
+		"\t@mv *.o $(OBJDIR)/\n"
+		"\n"
+		"clean:\n"
+		"\trm $(OBJ) $(BINDIR)/*\n"
+		"\n\n"
+	};
+	FILE *new_makefile;
+
+	file_content = strrep(file_content, "exename", exe_name);
+	if ((new_makefile = fopen("Makefile", "r")) == NULL) {
+		if ((new_makefile = fopen("Makefile", "w")) == NULL) {
+			fprintf(stderr, "cpps\nerror: Failed to create the file \"Makefile\".\n");
+			return EXIT_FAILURE;
+		}
+		fputs(file_content, new_makefile);
+		fclose(new_makefile);
+	}
+	else {
+		fprintf(stderr, "cpps\nerror: The file \"Makefile\" already exist.\n");
+		fclose(new_makefile);
+		return EXIT_FAILURE;
+	}
+
+	return 0;
+}
+
+
 int make_pds(char *project_name) {
 	char *bin_dir_location = "projectname\\bin";
 	char *src_dir_location = "projectname\\src";
