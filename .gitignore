@@ -8,6 +8,8 @@ tests/
 
 # File(s)
 *.exe
+*.gch
 *.o
+run-test.sh
 
 

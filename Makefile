@@ -40,22 +40,32 @@ clean:
 	rm -f $(OBJ) $(BINDIR)/*
 
 clean-test:
-	rm -f $(TESTDIR)/bin/* $(TESTDIR)/*.o *.c
+	rm -f $(TESTDIR)/bin/* $(TESTDIR)/*.o $(TESTDIR)/*.c
+	rmdir $(TESTDIR)/testproject/bin $(TESTDIR)/testproject/src $(TESTDIR)/testproject
+	rm -f $(TESTDIR)/Makefile
 
 distclean: clean
 	rmdir $(OBJDIR)/ $(BINDIR)
-	rm -f C-Programming-Project-Setup-0.1.0-release.tar
-	rm -f C-Programming-Project-Setup-0.1.0-debug.tar
-	rm -f C-Programming-Project-Setup-0.1.0-source.tar
+	rm -f C-Programming-Project-Setup-0.1.0-win-release.tar
+	rm -f C-Programming-Project-Setup-0.1.0-win-debug.tar
+	rm -f C-Programming-Project-Setup-0.1.0-win-source.tar
 
 archive-source:
-	tar -cf C-Programming-Project-Setup-0.1.0-source.tar src/*.c .gitignore Makefile README.md
+	tar -cf C-Programming-Project-Setup-0.1.0-win-source.tar include/sput-1.4.0/* src/*.c .gitignore COPYING install-cpps.cmd Makefile README.md
 
 archive-release:
-	tar -cf C-Programming-Project-Setup-0.1.0-release.tar bin/* COPYING README.md
+	tar -cf C-Programming-Project-Setup-0.1.0-win-release.tar bin/* COPYING README.md
 
 archive-debug:
-	tar -cf C-Programming-Project-Setup-0.1.0-debug.tar bin/* COPYING README.md
+	tar -cf C-Programming-Project-Setup-0.1.0-win-debug.tar bin/* COPYING README.md
 
+install:
+	install -d /C/CPPS/bin
+	install bin/cpps.exe /C/CPPS/bin
+	install COPYING /C/CPPS
+	install README.md /C/CPPS
+
+uninstall:
+	rm -fr /C/CPPS
 
 
