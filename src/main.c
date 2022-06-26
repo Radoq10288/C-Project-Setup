@@ -11,15 +11,19 @@ int main(int argc, char *argv[]) {
 		 exe_filename[260], project_name[260];
 	int getopt_status;
 
+	// Flags
+	static int flag;
+
 	strcpy(project_name, argv[1]);
 	strcpy(exe_filename, argv[1]);
 	while(true) {
         int option_index = 0;
         static struct option long_options[] = {
-            {"exe-name", required_argument, 0,  0},
-            {"filename", required_argument, 0,  0},
-            {"verbose",  no_argument,       0,  0},
-            {0,          0,                 0,  0}
+			{"brief",		no_argument,       	&flag,				0},
+            {"exe-name",	required_argument,	0,  				'e'},
+            {"filename",	required_argument,	0,  				'f'},
+            {"verbose",		no_argument,		&flag,			1},
+            {0,				0,					0,					0}
         };
 
 		opterr = 0;
@@ -29,6 +33,9 @@ int main(int argc, char *argv[]) {
 		}
 
 		switch(getopt_status) {
+			case 0:
+				// Just do nothing here...
+				break;
 			case 'e':
 				strcpy(exe_filename, optarg);
 				break;
@@ -45,14 +52,19 @@ int main(int argc, char *argv[]) {
     }
 
 	if (make_pds(project_name) != 0) {goto cpps_error;}
+	if (flag == 1) {printf("Project directory structure is created.\n");}
 
 	strcat(c_source_file_loc, c_source_filename);
 	strcpy(c_source_file_loc, strrep(c_source_file_loc, "projectname", project_name));
 	if (make_csf(c_source_file_loc) != 0) {goto cpps_error;}
+	if (flag == 1) {printf("C source file created.\n");}
 
 	_chdir(project_name);
 	if (make_makefile(exe_filename) != 0) {goto cpps_error;}
+	if (flag == 1) {printf("Makefile is created.\n");}
 	_chdir("..");
+
+	if (flag == 1)  {printf("New project \"%s\" is created.\n", project_name);}
 
 	return 0;
 
