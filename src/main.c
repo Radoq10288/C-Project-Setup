@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         };
 
 		opterr = 0;
-		getopt_status = getopt_long(argc, argv, "e:f:v", long_options, &option_index);
+		getopt_status = getopt_long(argc, argv, ":e:f:", long_options, &option_index);
         if (getopt_status == -1) {
 			break;
 		}
@@ -43,11 +43,16 @@ int main(int argc, char *argv[]) {
 				strcpy(c_source_filename, optarg);
 				break;
 			case '?':
-				fprintf(stderr, "cpps\nError: Unknown option of \"%c\"\n", optopt);
-				break;
+				if (optopt == '\0') {
+					fprintf(stderr, "cpps\nError: Unknown long option of '%s'\n", argv[optind - 1]);
+				}
+				else {
+					fprintf(stderr, "cpps\nError: Unknown short option of '-%c'\n", optopt);
+				}
+				goto cpps_error;
 			case ':':
-				fprintf(stderr, "cpps\nWarning: Missing argument for option -%c/--%s\n", optopt, long_options[option_index].name);
-				break;
+				fprintf(stderr, "cpps\nWarning: Missing argument for option '-%c/--%s'.\n", optopt, long_options[option_index].name);
+				goto cpps_error;
         }
     }
 
