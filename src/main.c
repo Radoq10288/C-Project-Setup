@@ -78,7 +78,12 @@ int main(int argc, char *argv[]) {
 				}
 				goto cpps_error;
 			case ':':
-				fprintf(stderr, "cpps\nWarning: Missing argument for option '-%c/--%s'.\n", optopt, long_options[option_index].name);
+				if (optopt =='\0') {
+					fprintf(stderr, "cpps\nError: Long option '--%s' requires an argument.\n", long_options[optind - 1].name);
+				}
+				else {
+					fprintf(stderr, "cpps\nError: Short option '-%c' requires an argument.\n", optopt);
+				}
 				goto cpps_error;
         }
     }
