@@ -21,7 +21,7 @@ static void help(void) {
 
 
 static void version(void) {
-	printf("\nC Programming Project Setup version 0.1.1-pre-alpha.6, Copyright (C) 2022 Radoq10288\n"
+	printf("\nC Programming Project Setup version 0.1.1-pre-alpha.7, Copyright (C) 2022 Radoq10288\n"
 			"C Programming Project Setup comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"
 			"This is free software, and you are welcome to redistribute it\n"
 			"under certain conditions; type `show c' for details.\n");
