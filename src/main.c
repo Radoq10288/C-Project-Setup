@@ -57,6 +57,9 @@ int main(int argc, char *argv[]) {
 		}
 
 		switch(getopt_status) {
+			case 0:
+				/* Do nothing here... */
+				break;
 			case 'e':
 				strcpy(exe_filename, optarg);
 				break;
