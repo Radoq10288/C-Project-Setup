@@ -1,6 +1,8 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+char *get_date(void);
+
 int make_csf(char *file_name);
 
 int make_makefile(char *exe_name);

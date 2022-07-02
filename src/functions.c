@@ -5,6 +5,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
+
+static char *date_string;
+
+
+static void free_date_string(void) {
+	free(date_string);
+	date_string = NULL;
+}
+
+
+char *get_date(void) {
+	time_t date;
+	struct tm *date_info;
+
+	date_string = malloc(sizeof(date_string) * 11);
+	time(&date);
+	date_info = localtime(&date);
+	strftime(date_string, 11, "%m/%d/%Y", date_info);
+	atexit(free_date_string);
+	return date_string;
+}
 
 
 int make_csf(char *file_name) {
@@ -13,7 +36,7 @@ int make_csf(char *file_name) {
 		" *\n"
 		" * Author:       \n"
 		" *\n"
-		" * Date & time:  \n"
+		" * Date & time:  datetime\n"
 		" */\n"
 		"\n"
 		"#include <stdio.h>\n"
