@@ -30,6 +30,28 @@ char *get_date(void) {
 }
 
 
+static char *time_string;
+
+
+static void free_time_string(void) {
+	free(time_string);
+	time_string = NULL;
+}
+
+
+char *get_time(void) {
+	time_t time_;
+	struct tm *time_info;
+
+	time_string = malloc(sizeof(time_string) * 12);
+	time(&time_);
+	time_info = localtime(&time_);
+	strftime(time_string, 12, "%I:%M:%S-%p", time_info);
+	atexit(free_time_string);
+	return time_string;
+}
+
+
 int make_csf(char *file_name) {
 	char *file_content = {
 		"/* File:         \n"
