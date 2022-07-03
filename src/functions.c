@@ -54,7 +54,7 @@ char *get_time(void) {
 
 int make_csf(char *file_name) {
 	char *file_content = {
-		"/* File:         \n"
+		"/* File:         filename\n"
 		" *\n"
 		" * Author:       \n"
 		" *\n"
@@ -76,6 +76,7 @@ int make_csf(char *file_name) {
 
 	strcpy(new_file_name, file_name);
 	strcat(new_file_name, ".c");
+	file_content = strrep(file_content, "filename", new_file_name);
 	if ((new_c_file = fopen(new_file_name, "r")) == NULL) {
 		if ((new_c_file = fopen(new_file_name, "w")) == NULL) {
 			fprintf(stderr, "cpps\nerror: Failed to create the file \"%s\".\n", new_file_name);
