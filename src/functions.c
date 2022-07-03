@@ -71,12 +71,18 @@ int make_csf(char *file_name) {
 		"\n"
 		"\n"
 	};
-	char new_file_name[260];
+	char date_time_string[24], new_file_name[260];
 	FILE *new_c_file;
 
 	strcpy(new_file_name, file_name);
 	strcat(new_file_name, ".c");
 	file_content = strrep(file_content, "filename", new_file_name);
+
+	strcpy(date_time_string, get_date());
+	strcat(date_time_string, "-");
+	strcat(date_time_string, get_time());
+	file_content = strrep(file_content, "datetime", date_time_string);
+
 	if ((new_c_file = fopen(new_file_name, "r")) == NULL) {
 		if ((new_c_file = fopen(new_file_name, "w")) == NULL) {
 			fprintf(stderr, "cpps\nerror: Failed to create the file \"%s\".\n", new_file_name);
