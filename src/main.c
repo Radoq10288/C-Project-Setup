@@ -21,7 +21,7 @@ static void help(void) {
 
 
 static void version(void) {
-	printf("\nCPPS version 0.1.1-alpha.2, Copyright (C) 2022 Radoq10288\n"
+	printf("\nCPPS version 0.1.1-alpha.3, Copyright (C) 2022 Radoq10288\n"
 			"CPPS comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"
 			"This is free software, and you are welcome to redistribute it\n"
 			"under certain conditions; type `show c' for details.\n");
@@ -57,9 +57,6 @@ int main(int argc, char *argv[]) {
 		}
 
 		switch(getopt_status) {
-			case 0:
-				/* Do nothing here... */
-				break;
 			case 'e':
 				strcpy(exe_filename, optarg);
 				break;
@@ -72,6 +69,7 @@ int main(int argc, char *argv[]) {
 			case 'v':
 				version();
 				goto skip_project_creation;
+			case 0:
 			case '?':
 				if (optopt == '\0') {
 					fprintf(stderr, "cpps\nError: Unknown long option of '%s'\n", argv[optind - 1]);

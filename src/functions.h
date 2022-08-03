@@ -11,7 +11,7 @@ int make_makefile(char *exe_name);
 
 int make_pds(char *project_name);
 
-char* strrep(char *input_string, char *old_string, char *new_string);
+char* strrep(const char *input_string, const char *old_string, const char *new_string);
 
 #endif // FUNCTIONS_H_INCLUDED
 

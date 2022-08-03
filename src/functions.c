@@ -8,14 +8,15 @@
 #include <time.h>
 
 
-static char *date_string;
+#define EMPTY_STRING	"\0"
 
+
+static char *date_string;
 
 static void free_date_string(void) {
 	free(date_string);
 	date_string = NULL;
 }
-
 
 char *get_date(void) {
 	time_t date;
@@ -32,12 +33,10 @@ char *get_date(void) {
 
 static char *time_string;
 
-
 static void free_time_string(void) {
 	free(time_string);
 	time_string = NULL;
 }
-
 
 char *get_time(void) {
 	time_t time_;
@@ -49,6 +48,29 @@ char *get_time(void) {
 	strftime(time_string, 12, "%I:%M:%S-%p", time_info);
 	atexit(free_time_string);
 	return time_string;
+}
+
+
+static int make_file(const char *file_name, const char *file_content) {
+	FILE *new_file;
+	if ((new_file = fopen(file_name, "r")) == NULL) {
+		if ((new_file = fopen(file_name, "w")) == NULL) {
+			fprintf(stderr, "cpps\nerror: Failed to create the file '%s'.\n", file_name);
+			goto makefile_error;
+		}
+		fputs(file_content, new_file);
+		fclose(new_file);
+	}
+	else {
+		fprintf(stderr, "cpps\nerror: The file '%s' already exist.\n", file_name);
+		fclose(new_file);
+		goto makefile_error;
+	}
+
+	return EXIT_SUCCESS;
+
+	makefile_error:;
+	return EXIT_FAILURE;
 }
 
 
@@ -72,7 +94,6 @@ int make_csf(char *file_name) {
 		"\n"
 	};
 	char date_time_string[24], new_file_name[260];
-	FILE *new_c_file;
 
 	strcpy(new_file_name, file_name);
 	strcat(new_file_name, ".c");
@@ -83,19 +104,7 @@ int make_csf(char *file_name) {
 	strcat(date_time_string, get_time());
 	file_content = strrep(file_content, "datetime", date_time_string);
 
-	if ((new_c_file = fopen(new_file_name, "r")) == NULL) {
-		if ((new_c_file = fopen(new_file_name, "w")) == NULL) {
-			fprintf(stderr, "cpps\nerror: Failed to create the file \"%s\".\n", new_file_name);
-			return EXIT_FAILURE;
-		}
-		fputs(file_content, new_c_file);
-		fclose(new_c_file);
-	}
-	else {
-		fprintf(stderr, "cpps\nerror: The file \"%s\" already exist.\n", new_file_name);
-		fclose(new_c_file);
-		return EXIT_FAILURE;
-	}
+	make_file(new_file_name, file_content);
 
 	return 0;
 }
@@ -111,7 +120,7 @@ int make_makefile(char *exe_name) {
 		"OBJ=$(OBJDIR)/*.o\n"
 		"CFILES=$(SRCDIR)/*.c\n"
 		"\n"
-		"CC=mingw32-gcc-9.2.0\n"
+		"CC=gcc\n"
 		"\n"
 		"debug: CFLAGS=-g -pedantic -Wall\n"
 		"debug: build compile\n"
@@ -134,22 +143,9 @@ int make_makefile(char *exe_name) {
 		"\trm $(OBJ) $(BINDIR)/*\n"
 		"\n\n"
 	};
-	FILE *new_makefile;
 
 	file_content = strrep(file_content, "exename", exe_name);
-	if ((new_makefile = fopen("Makefile", "r")) == NULL) {
-		if ((new_makefile = fopen("Makefile", "w")) == NULL) {
-			fprintf(stderr, "cpps\nerror: Failed to create the file \"Makefile\".\n");
-			return EXIT_FAILURE;
-		}
-		fputs(file_content, new_makefile);
-		fclose(new_makefile);
-	}
-	else {
-		fprintf(stderr, "cpps\nerror: The file \"Makefile\" already exist.\n");
-		fclose(new_makefile);
-		return EXIT_FAILURE;
-	}
+	make_file("Makefile", file_content);
 
 	return 0;
 }
@@ -173,52 +169,54 @@ int make_pds(char *project_name) {
 
 static char *result_string;
 
-
 static void free_result_string(void) {
 	free(result_string);
 	result_string = NULL;
 }
 
-
-char* strrep(char *input_string, char *old_string, char *new_string) {
-	bool is_buffer_empty = true, is_old_string_found = false;
-	char buffer[260];
-	int char_index = 0, result_string_length = strlen(input_string) + 1;
+char* strrep(const char *input_string, const char *old_string, const char *new_string) {
+	bool is_old_string_found = false;
+	size_t buffer_size = strlen(old_string),
+		   input_str_size = strlen(input_string),
+		   new_str_size = strlen(new_string),
+		   result_str_size = input_str_size + 1;
+	char buffer[buffer_size];
 
 	/* Set the size of result_string based on the length of input_string
 	 * and new_string. If new_string has the same length as old_string, use
 	 * the length of input_string as default size.
 	 */
 
-	if (strlen(new_string) > strlen(old_string) || strlen(new_string) < strlen(old_string)) {
-		result_string_length = (strlen(input_string) - strlen(old_string) + strlen(new_string) + 2);
+	if (new_str_size > strlen(old_string) || new_str_size < strlen(old_string)) {
+		result_str_size = (input_str_size - strlen(old_string) + new_str_size + 1);
 	}
-	result_string = malloc(sizeof(char) * result_string_length);
+	result_string = malloc(sizeof(char) * result_str_size);
 
-	strcpy(buffer, "");
-	strcpy(result_string, "");
-	while (char_index <= strlen(input_string)) {
-		if (isalpha(input_string[char_index])) {
-			strncat(buffer, &input_string[char_index], 1);
-			is_buffer_empty = false;
+	strcpy(buffer, EMPTY_STRING);
+	strcpy(result_string, EMPTY_STRING);
+	int buffer_count = 1, char_index = 0;
+
+	while (char_index != input_str_size) {
+		strncat(buffer, &input_string[char_index], 1);
+
+		if (strcmp(old_string, buffer) == 0) {
+			strcat(result_string, new_string);
+			strcpy(buffer, EMPTY_STRING);
+			is_old_string_found = true;
+			buffer_count -= 1;
+		}
+		else if (buffer_count == buffer_size) {
+			strncat(result_string, &buffer[0], 1);
+			if (buffer_count > 1) {
+				memmove(buffer, buffer+1, (buffer_size - 1));
+			}
+			buffer[(buffer_size - 1)] = '\0';
+			buffer_count -= 1;
 		}
 		else {
-			if (is_buffer_empty == true) {
-				strncat(result_string, &input_string[char_index], 1);
-			}
-			else {
-				if (strcmp(buffer, old_string) == 0) {
-					strcat(result_string, new_string);
-					is_old_string_found = true;
-				}
-				else {
-					strcat(result_string, buffer);
-				}
-				strcpy(buffer, "");
-				is_buffer_empty = true;
-				strncat(result_string, &input_string[char_index], 1);
-			}
+			// Do nothing here...
 		}
+		buffer_count++;
 		char_index++;
 	}
 
