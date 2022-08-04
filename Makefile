@@ -7,7 +7,7 @@ BIN=$(BINDIR)/cpps
 OBJ=$(OBJDIR)/*.o
 CFILES=$(SRCDIR)/*.c
 
-CC=mingw32-gcc-9.2.0
+CC=gcc
 CFLAGS=-g -pedantic -Wall
 
 
@@ -49,29 +49,33 @@ clean-test:
 	rm -f $(TESTDIR)/Makefile
 
 distclean: clean
+	rm -fr $(BINDIR)/* $(OBJDIR)/*
+	rm -f CPPS-0.1.1-alpha.2-win32-release.tar
+	rm -f CPPS-0.1.1-alpha.2-win32-debug.tar
+	rm -f CPPS-0.1.1-alpha.2-win32-source.tar
 	rmdir $(OBJDIR)/ $(BINDIR)
-	rm -f C-Programming-Project-Setup-0.1.1-alpha.2-win-release.tar
-	rm -f C-Programming-Project-Setup-0.1.1-alpha.2-win-debug.tar
-	rm -f C-Programming-Project-Setup-0.1.1-alpha.2-win-source.tar
 
 
-archive-source:
-	tar -cf C-Programming-Project-Setup-0.1.1-alpha.2-win-source.tar include/sput-1.4.0/* src/*.c .gitignore COPYING install-cpps.cmd Makefile README.md
+tar-source:
+	tar -cvf CPPS-0.1.1-alpha.2-win32-source.tar include/sput-1.4.0/* src/*.c src/*.h .gitignore COPYING Makefile README.md
 
-archive-release:
-	tar -cf C-Programming-Project-Setup-0.1.1-alpha.2-win-release.tar bin/* COPYING install-cpps.cmd README.md
+tar-release:
+	tar -cvf CPPS-0.1.1-alpha.2-win32-release.tar bin/* COPYING README.md
 
-archive-debug:
-	tar -cf C-Programming-Project-Setup-0.1.1-alpha.2-win-debug.tar bin/* COPYING install-cpps.cmd README.md
+tar-debug:
+	tar -cvf CPPS-0.1.1-alpha.2-win32-debug.tar bin/* COPYING README.md
 
 
 install:
-	install -d /C/CPPS/bin
-	install bin/cpps.exe /C/CPPS/bin
-	install COPYING /C/CPPS
-	install README.md /C/CPPS
+	install -d ~/local/bin
+	install -d ~/local/share/cpps
+	install bin/cpps.exe ~/local/bin
+	install COPYING ~/local/share/cpps
+	install README.md ~/local/share/cpps
 
 uninstall:
-	rm -fr /C/CPPS
+	rm -fr ~/local/bin/cpps.exe
+	rm -fr ~/local/share/cpps/*
+	rmdir ~/local/share/cpps
 
 
