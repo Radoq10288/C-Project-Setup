@@ -14,7 +14,7 @@ static void help(void) {
 			"Options:\n"
 			"    -e, --exe-name     Filename of the executable file to be created.\n"
 			"    -f, --filename     Filename of the C source file to be created.\n"
-			"    -h                 Show this help.\n"
+			"    -h, --help         Show this help.\n"
 			"        --verbose      Show messages what is being done.\n"
 			"    -v, --version      Show current version of this software.\n");
 }
