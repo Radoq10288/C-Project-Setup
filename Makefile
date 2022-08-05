@@ -44,26 +44,27 @@ clean:
 	rm -f $(OBJ) $(BINDIR)/*
 
 clean-test:
-	rm -f $(TESTDIR)/bin/* $(TESTDIR)/*.o $(TESTDIR)/*.c
-	rmdir $(TESTDIR)/testproject/bin $(TESTDIR)/testproject/src $(TESTDIR)/testproject
-	rm -f $(TESTDIR)/Makefile
+	rm -f $(TESTDIR)/bin/* $(TESTDIR)/*.o $(TESTDIR)/*.c $(TESTDIR)/Makefile
+	rm -f $(TESTDIR)/testproject/src/* $(TESTDIR)/testproject/Makefile
+	rmdir $(TESTDIR)/testproject/bin $(TESTDIR)/testproject/src
+	rmdir $(TESTDIR)/testproject
 
 distclean: clean
 	rm -fr $(BINDIR)/* $(OBJDIR)/*
-	rm -f CPPS-0.1.1-alpha.2-win32-release.tar
-	rm -f CPPS-0.1.1-alpha.2-win32-debug.tar
-	rm -f CPPS-0.1.1-alpha.2-win32-source.tar
-	rmdir $(OBJDIR)/ $(BINDIR)
+	rm -f CPPS-0.1.1-alpha.3-release.tar
+	rm -f CPPS-0.1.1-alpha.3-debug.tar
+	rm -f CPPS-0.1.1-alpha.3-source.tar
+	rmdir $(OBJDIR) $(BINDIR)
 
 
 tar-source:
-	tar -cvf CPPS-0.1.1-alpha.2-win32-source.tar include/sput-1.4.0/* src/*.c src/*.h .gitignore COPYING Makefile README.md
+	tar -cvf CPPS-0.1.1-alpha.3-source.tar include/sput-1.4.0/* src/*.c src/*.h .gitignore COPYING Makefile README.md
 
 tar-release:
-	tar -cvf CPPS-0.1.1-alpha.2-win32-release.tar bin/* COPYING README.md
+	tar -cvf CPPS-0.1.1-alpha.3-release.tar bin/* COPYING README.md
 
 tar-debug:
-	tar -cvf CPPS-0.1.1-alpha.2-win32-debug.tar bin/* COPYING README.md
+	tar -cvf CPPS-0.1.1-alpha.3-debug.tar bin/* COPYING README.md
 
 
 install:
@@ -74,7 +75,7 @@ install:
 	install README.md ~/local/share/cpps
 
 uninstall:
-	rm -fr ~/local/bin/cpps.exe
+	rm -fr ~/local/bin/cpps
 	rm -fr ~/local/share/cpps/*
 	rmdir ~/local/share/cpps
 
