@@ -1,9 +1,9 @@
 #include <getopt.h>
-#include <io.h>
 #include "functions.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 
 static void help(void) {
@@ -28,9 +28,30 @@ static void version(void) {
 }
 
 
+int make_project(char *project_name, char *exe_name, char *c_source_file) {
+	char *bin_dir_location = "projectname/bin",
+		 *src_dir_location = "projectname/src",
+		 *src_file = "projectname/src/srcfile",
+		 *makefile = "projectname/Makefile";
+
+	if (mkdir(project_name)) {return 1;}
+	bin_dir_location = strrep(bin_dir_location, "projectname", project_name);
+	src_dir_location = strrep(src_dir_location, "projectname", project_name);
+	src_file = strrep(src_file, "projectname", project_name);
+	src_file = strrep(src_file, "srcfile", c_source_file);
+	makefile = strrep(makefile, "projectname", project_name);
+
+	mkdir(bin_dir_location);
+	mkdir(src_dir_location);
+	make_csf(src_file);
+	make_makefile(makefile, exe_name);
+
+	return 0;
+}
+
+
 int main(int argc, char *argv[]) {
-	char c_source_filename[260] = "main", c_source_file_loc[260] = "projectname\\src\\",
-		 exe_filename[260], project_name[260];
+	char c_source_filename[260] = "main", exe_filename[260], project_name[260];
 	int getopt_status;
 
 	// Flags
@@ -69,7 +90,6 @@ int main(int argc, char *argv[]) {
 			case 'v':
 				version();
 				goto skip_project_creation;
-			case 0:
 			case '?':
 				if (optopt == '\0') {
 					fprintf(stderr, "cpps\nError: Unknown long option of '%s'\n", argv[optind - 1]);
@@ -89,21 +109,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
-	if (make_pds(project_name) != 0) {goto cpps_error;}
-	if (flag == 1) {printf("Project directory structure is created.\n");}
-
-	strcat(c_source_file_loc, c_source_filename);
-	strcpy(c_source_file_loc, strrep(c_source_file_loc, "projectname", project_name));
-	if (make_csf(c_source_file_loc) != 0) {goto cpps_error;}
-	if (flag == 1) {printf("C source file created.\n");}
-
-	_chdir(project_name);
-	if (make_makefile(exe_filename) != 0) {goto cpps_error;}
-	if (flag == 1) {printf("Makefile is created.\n");}
-	_chdir("..");
-
-	if (flag == 1)  {printf("New project \"%s\" is created.\n", project_name);}
-
+	if (make_project(project_name, exe_filename, c_source_filename) != 0) {
+		fprintf(stderr, "cpps\nerror: Directory \"%s\" already exist.\n", project_name);
+		goto cpps_error;
+	}
+	if (flag == 1) {printf("cpps\nInfo: New project '%s' is created.\n", project_name);}
 	skip_project_creation:;
 	return 0;
 

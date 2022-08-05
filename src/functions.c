@@ -1,11 +1,11 @@
 #include <ctype.h>
 #include "functions.h"
-#include <io.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 
 #define EMPTY_STRING	"\0"
@@ -55,22 +55,20 @@ static int make_file(const char *file_name, const char *file_content) {
 	FILE *new_file;
 	if ((new_file = fopen(file_name, "r")) == NULL) {
 		if ((new_file = fopen(file_name, "w")) == NULL) {
-			fprintf(stderr, "cpps\nerror: Failed to create the file '%s'.\n", file_name);
 			goto makefile_error;
 		}
 		fputs(file_content, new_file);
 		fclose(new_file);
 	}
 	else {
-		fprintf(stderr, "cpps\nerror: The file '%s' already exist.\n", file_name);
 		fclose(new_file);
 		goto makefile_error;
 	}
 
-	return EXIT_SUCCESS;
+	return 0;
 
 	makefile_error:;
-	return EXIT_FAILURE;
+	return 1;
 }
 
 
@@ -104,13 +102,13 @@ int make_csf(char *file_name) {
 	strcat(date_time_string, get_time());
 	file_content = strrep(file_content, "datetime", date_time_string);
 
-	make_file(new_file_name, file_content);
+	if (make_file(new_file_name, file_content)) {return 1;}
 
 	return 0;
 }
 
 
-int make_makefile(char *exe_name) {
+int make_makefile(char *project_name, char *exe_name) {
 	char *file_content = {
 		"BINDIR=bin\n"
 		"OBJDIR=obj\n"
@@ -145,24 +143,8 @@ int make_makefile(char *exe_name) {
 	};
 
 	file_content = strrep(file_content, "exename", exe_name);
-	make_file("Makefile", file_content);
+	if (make_file(project_name, file_content)) {return 1;}
 
-	return 0;
-}
-
-
-int make_pds(char *project_name) {
-	char *bin_dir_location = "projectname\\bin";
-	char *src_dir_location = "projectname\\src";
-
-	if (_mkdir(project_name)) {
-		fprintf(stderr, "cpps\nerror: Directory \"%s\" already exist.\n", project_name);
-		return EXIT_FAILURE;
-	}
-	bin_dir_location = strrep(bin_dir_location, "projectname", project_name);
-	_mkdir(bin_dir_location);
-	src_dir_location = strrep(src_dir_location, "projectname", project_name);
-	_mkdir(src_dir_location);
 	return 0;
 }
 
