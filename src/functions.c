@@ -73,7 +73,7 @@ static int make_file(const char *file_name, const char *file_content) {
 
 
 int make_csf(char *file_name) {
-	char *file_content = {
+	char file_content[200] = {
 		"/* File:         filename\n"
 		" *\n"
 		" * Author:       \n"
@@ -95,12 +95,12 @@ int make_csf(char *file_name) {
 
 	strcpy(new_file_name, file_name);
 	strcat(new_file_name, ".c");
-	file_content = strrep(file_content, "filename", new_file_name);
+	strrep(file_content, "filename", new_file_name, file_content);
 
 	strcpy(date_time_string, get_date());
 	strcat(date_time_string, "-");
 	strcat(date_time_string, get_time());
-	file_content = strrep(file_content, "datetime", date_time_string);
+	strrep(file_content, "datetime", date_time_string, file_content);
 
 	if (make_file(new_file_name, file_content)) {return 1;}
 
@@ -109,7 +109,7 @@ int make_csf(char *file_name) {
 
 
 int make_makefile(char *project_name, char *exe_name) {
-	char *file_content = {
+	char file_content[500] = {
 		"BINDIR=bin\n"
 		"OBJDIR=obj\n"
 		"SRCDIR=src\n"
@@ -142,35 +142,29 @@ int make_makefile(char *project_name, char *exe_name) {
 		"\n\n"
 	};
 
-	file_content = strrep(file_content, "exename", exe_name);
+	strrep(file_content, "exename", exe_name, file_content);
 	if (make_file(project_name, file_content)) {return 1;}
 
 	return 0;
 }
 
 
-static char *result_string;
-
-static void free_result_string(void) {
-	free(result_string);
-	result_string = NULL;
-}
-
-char* strrep(const char *input_string, const char *old_string, const char *new_string) {
+size_t strrep(const char *input_string, const char *old_string, const char *new_string, char output_string[]) {
 	bool is_old_string_found = false;
 	size_t buffer_size = strlen(old_string),
 		   input_str_size = strlen(input_string),
 		   new_str_size = strlen(new_string),
+		   old_str_size = buffer_size,
 		   result_str_size = input_str_size + 1;
-	char buffer[buffer_size];
+	char buffer[buffer_size], *result_string;
 
 	/* Set the size of result_string based on the length of input_string
 	 * and new_string. If new_string has the same length as old_string, use
 	 * the length of input_string as default size.
 	 */
 
-	if (new_str_size > strlen(old_string) || new_str_size < strlen(old_string)) {
-		result_str_size = (input_str_size - strlen(old_string) + new_str_size + 1);
+	if (new_str_size > old_str_size || new_str_size < old_str_size) {
+		result_str_size = (input_str_size - old_str_size + new_str_size + 1);
 	}
 	result_string = malloc(sizeof(char) * result_str_size);
 
@@ -202,13 +196,16 @@ char* strrep(const char *input_string, const char *old_string, const char *new_s
 		char_index++;
 	}
 
-	atexit(free_result_string);
 	if (is_old_string_found == false) {
-		return NULL;	// old_string is not found, return NULL
+		strcpy(output_string, "\0");	// old_string is not found, return NULL
 	}
 	else {
-		return result_string;
+		strncpy(output_string, result_string, result_str_size);
+		output_string[result_str_size] = '\0';
 	}
+	free(result_string);
+	result_string = NULL;
+	return result_str_size;
 }
 
 
