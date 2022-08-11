@@ -1,11 +1,19 @@
 #include <ctype.h>
 #include "functions.h"
+
+/* This header file will only be available when compiling
+ * CPPS under Windows using MinGW.
+ */
+#ifndef __linux__
+	#include <io.h>
+#endif
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>	// mkdir() function resides here in linux
 #include <time.h>
-#include <unistd.h>
 
 
 #define EMPTY_STRING	"\0"
@@ -105,6 +113,19 @@ int make_csf(char *file_name) {
 	if (make_file(new_file_name, file_content)) {return 1;}
 
 	return 0;
+}
+
+
+int make_dir(const char *dir_name) {
+	#ifdef __linux__
+		if (mkdir(dir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)) {goto makedir_error;}
+	#else
+		if (_mkdir(dir_name)) {goto makedir_error;}
+	#endif
+	return 0;
+
+	makedir_error:;
+	return 1;
 }
 
 
