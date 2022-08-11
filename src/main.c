@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 
 static void help(void) {
@@ -29,20 +28,20 @@ static void version(void) {
 
 
 int make_project(char *project_name, char *exe_name, char *c_source_file) {
-	char *bin_dir_location = "projectname/bin",
-		 *src_dir_location = "projectname/src",
-		 *src_file = "projectname/src/srcfile",
-		 *makefile = "projectname/Makefile";
+	char bin_dir_location[30] = "projectname/bin",
+		 src_dir_location[30] = "projectname/src",
+		 src_file[30] = "projectname/src/srcfile",
+		 makefile[30] = "projectname/Makefile";
 
-	if (mkdir(project_name)) {return 1;}
-	bin_dir_location = strrep(bin_dir_location, "projectname", project_name);
-	src_dir_location = strrep(src_dir_location, "projectname", project_name);
-	src_file = strrep(src_file, "projectname", project_name);
-	src_file = strrep(src_file, "srcfile", c_source_file);
-	makefile = strrep(makefile, "projectname", project_name);
+	if (make_dir(project_name)) {return 1;}
+	strrep(bin_dir_location, "projectname", project_name, bin_dir_location);
+	strrep(src_dir_location, "projectname", project_name, src_dir_location);
+	strrep(src_file, "projectname", project_name, src_file);
+	strrep(src_file, "srcfile", c_source_file, src_file);
+	strrep(makefile, "projectname", project_name, makefile);
 
-	mkdir(bin_dir_location);
-	mkdir(src_dir_location);
+	make_dir(bin_dir_location);
+	make_dir(src_dir_location);
 	make_csf(src_file);
 	make_makefile(makefile, exe_name);
 
