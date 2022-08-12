@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/C-00599C?style=flat&logo=c&logoColor=white" />
 <img src="https://img.shields.io/badge/Notepad++-90E59A.svg?style=flat&logo=notepad%2B%2B&logoColor=black" />
 [![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-<img src="https://img.shields.io/badge/Version-0.1.1--alpha.3-blue?style=flat&color=blue" />
+<img src="https://img.shields.io/badge/Version-0.1.1--alpha.4-blue?style=flat&color=blue" />
 <br><br>
 
 ## About
@@ -27,15 +27,34 @@ read <a target="_blank" href="https://opensource.com/article/20/8/gnu-windows-mi
 <br><br>
 
 ## How to build and install
-To build *cpps*, just run the following command:<br>
+To build, compile, and install *cpps* in debug build, just run the following command:<br>
 
 ```
 $>make
 ...
 $>make install
 ```
+<br>
 
-Then manually add the following to the environment variable *Path*.<br>
+To build, compile, and install *cpps* in release build, run the following command:<br>
+```
+$> make release
+...
+$> make install
+```
+<br>
+
+__Installation note:__<br>
+In linux, to use the program installed in this directory ```~/local/bin```, add the following to the ```.bashrc```
+file.<br>
+
+```
+export PATH=$PATH:~/local/bin
+```
+
+<br>
+In windows, to use this program installed in similar directory (expecting that you installed the required MinGW), add the following to the ```Path``` environment variable.<br>
+
 ```
 C:\MinGW\msys\1.0\home\<your-user-name>\local\bin
 ```
