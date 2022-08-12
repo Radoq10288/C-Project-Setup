@@ -31,23 +31,15 @@ void get_date(char *date_str) {
 }
 
 
-static char *time_string;
-
-static void free_time_string(void) {
-	free(time_string);
-	time_string = NULL;
-}
-
-char *get_time(void) {
+void get_time(char *time_str) {
+	char time_string[12];
 	time_t time_;
 	struct tm *time_info;
 
-	time_string = malloc(sizeof(time_string) * 12);
 	time(&time_);
 	time_info = localtime(&time_);
 	strftime(time_string, 12, "%I:%M:%S-%p", time_info);
-	atexit(free_time_string);
-	return time_string;
+	strcpy(time_str, time_string);
 }
 
 
@@ -91,9 +83,10 @@ int make_csf(char *file_name) {
 		"\n"
 		"\n"
 	};
-	char date_str[11], date_time_string[24], new_file_name[260];
+	char date_str[11], date_time_string[24], new_file_name[260], time_str[12];
 
 	get_date(date_str);
+	get_time(time_str);
 
 	strcpy(new_file_name, file_name);
 	strcat(new_file_name, ".c");
@@ -101,7 +94,7 @@ int make_csf(char *file_name) {
 
 	strcpy(date_time_string, date_str);
 	strcat(date_time_string, "-");
-	strcat(date_time_string, get_time());
+	strcat(date_time_string, time_str);
 	strrep(file_content, "datetime", date_time_string, file_content);
 
 	if (make_file(new_file_name, file_content)) {return 1;}

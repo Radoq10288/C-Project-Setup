@@ -6,7 +6,7 @@
 
 void get_date(char *date_str);
 
-char *get_time(void);
+void get_time(char *time_str);
 
 int make_csf(char *file_name);
 
