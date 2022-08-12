@@ -117,12 +117,20 @@ int make_dir(const char *dir_name) {
 
 
 int make_makefile(char *project_name, char *exe_name) {
-	char file_content[500] = {
+	char file_content[570] = {
 		"BINDIR=bin\n"
 		"OBJDIR=obj\n"
 		"SRCDIR=src\n"
 		"\n"
-		"BIN=$(BINDIR)/exename\n"
+		"OS=$(shell uname -o)\n"
+		"ifeq ($(OS), Msys)\n"
+		"BINFILE=exename.exe\n"
+		"endif\n"
+		"ifeq ($(OS), GNU/Linux)\n"
+		"BINFILE=exename\n"
+		"endif\n"
+		"\n"
+		"BIN=$(BINDIR)/$(BINFILE)\n"
 		"OBJ=$(OBJDIR)/*.o\n"
 		"CFILES=$(SRCDIR)/*.c\n"
 		"\n"
@@ -147,10 +155,14 @@ int make_makefile(char *project_name, char *exe_name) {
 		"\n"
 		"clean:\n"
 		"\trm $(OBJ) $(BINDIR)/*\n"
+		"\n"
+		"distclean: clean\n"
+		"\trmdir $(BINDIR) $(OBJDIR)\n"
 		"\n\n"
 	};
 
-	strrep(file_content, "exename", exe_name, file_content);
+	strrep(file_content, "exename", exe_name, file_content);	// For a weird reason, it only replace 'exename' from the string 'BINFILE=exename.exe'.
+	strrep(file_content, "exename", exe_name, file_content);	// The second one is used to replace 'exename' from the string 'BINFILE=exename'.
 	if (make_file(project_name, file_content)) {return 1;}
 
 	return 0;
