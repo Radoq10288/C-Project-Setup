@@ -19,23 +19,15 @@
 #define EMPTY_STRING	"\0"
 
 
-static char *date_string;
-
-static void free_date_string(void) {
-	free(date_string);
-	date_string = NULL;
-}
-
-char *get_date(void) {
+void get_date(char *date_str) {
+	char date_string[11];
 	time_t date;
 	struct tm *date_info;
 
-	date_string = malloc(sizeof(date_string) * 11);
 	time(&date);
 	date_info = localtime(&date);
 	strftime(date_string, 11, "%m/%d/%Y", date_info);
-	atexit(free_date_string);
-	return date_string;
+	strcpy(date_str, date_string);
 }
 
 
@@ -99,13 +91,15 @@ int make_csf(char *file_name) {
 		"\n"
 		"\n"
 	};
-	char date_time_string[24], new_file_name[260];
+	char date_str[11], date_time_string[24], new_file_name[260];
+
+	get_date(date_str);
 
 	strcpy(new_file_name, file_name);
 	strcat(new_file_name, ".c");
 	strrep(file_content, "filename", new_file_name, file_content);
 
-	strcpy(date_time_string, get_date());
+	strcpy(date_time_string, date_str);
 	strcat(date_time_string, "-");
 	strcat(date_time_string, get_time());
 	strrep(file_content, "datetime", date_time_string, file_content);

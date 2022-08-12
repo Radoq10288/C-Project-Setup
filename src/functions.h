@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 
-char *get_date(void);
+void get_date(char *date_str);
 
 char *get_time(void);
 
