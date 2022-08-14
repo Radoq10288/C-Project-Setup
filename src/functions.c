@@ -117,7 +117,7 @@ int make_dir(const char *dir_name) {
 
 
 int make_makefile(char *project_name, char *exe_name) {
-	char file_content[570] = {
+	char file_content[590] = {
 		"BINDIR=bin\n"
 		"OBJDIR=obj\n"
 		"SRCDIR=src\n"
@@ -150,6 +150,7 @@ int make_makefile(char *project_name, char *exe_name) {
 		"$(OBJ) : $(CFILES)\n"
 		"\t$(CC) -c $(CFILES) $(CFLAGS)\n"
 		"\n"
+		"\t@mkdir -p $(BINDIR)\n"
 		"\t@mkdir -p $(OBJDIR)\n"
 		"\t@mv *.o $(OBJDIR)/\n"
 		"\n"
