@@ -1,7 +1,6 @@
 BINDIR=bin
 OBJDIR=obj
 SRCDIR=src
-TESTDIR=tests
 
 OS=$(shell uname -o)
 ifeq ($(OS), Msys)
@@ -37,31 +36,35 @@ $(OBJ) : $(CFILES)
 	@mkdir -p $(BINDIR)
 	@mv *.o $(OBJDIR)/
 
-
-test: $(TESTDIR)/bin/test
-$(TESTDIR)/bin/test: $(TESTDIR)/*.o
-	$(CC) -o $(TESTDIR)/bin/test $(TESTDIR)/*.o
-
-$(TESTDIR)/*.o: $(TESTDIR)/src/*.c $(SRCDIR)/functions.c $(SRCDIR)/functions.h
-	$(CC) -c $(TESTDIR)/src/*.c $(SRCDIR)/functions.c $(SRCDIR)/functions.h $(CFLAGS)
-
-	@mv *.o $(TESTDIR)/
-
-
 clean:
 	rm -f $(OBJ) $(BINDIR)/*
-
-clean-test:
-	rm $(TESTDIR)/bin/* $(TESTDIR)/*.o $(TESTDIR)/*.c $(TESTDIR)/Makefile
-	rm $(TESTDIR)/testproject/src/* $(TESTDIR)/testproject/Makefile
-	rmdir $(TESTDIR)/testproject/bin $(TESTDIR)/testproject/src
-	rmdir $(TESTDIR)/testproject
 
 distclean: clean
 	rmdir $(OBJDIR) $(BINDIR)
 	rm CPPS-0.1.1-alpha.3-release.tar
 	rm CPPS-0.1.1-alpha.3-debug.tar
 	rm CPPS-0.1.1-alpha.3-source.tar
+
+
+build-test:
+	cd tests && $(MAKE)
+
+run-test:
+ifeq ($(shell if test -d tests/bin/testproject; then echo "exist"; fi), exist)
+	@rm -f tests/bin/testproject/src/*
+	@rm -f tests/bin/testproject/Makefile
+	@rmdir tests/bin/newdir
+	@rmdir tests/bin/testproject/bin
+	@rmdir tests/bin/testproject/src
+	@rmdir tests/bin/testproject
+endif
+	cd tests/bin && ./test
+
+clean-test:
+	cd tests && $(MAKE) clean
+
+distclean-test:
+	cd tests && $(MAKE) distclean
 
 
 tar-source:
