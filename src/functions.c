@@ -19,7 +19,7 @@
 #define EMPTY_STRING	"\0"
 
 
-void get_date(char *date_str) {
+static void get_date(char *date_str) {
 	char date_string[11];
 	time_t date;
 	struct tm *date_info;
@@ -31,7 +31,7 @@ void get_date(char *date_str) {
 }
 
 
-void get_time(char *time_str) {
+static void get_time(char *time_str) {
 	char time_string[12];
 	time_t time_;
 	struct tm *time_info;
@@ -65,12 +65,24 @@ static int make_file(const char *file_name, const char *file_content) {
 
 
 int make_csf(char *file_name) {
-	char file_content[200] = {
-		"/* File:         filename\n"
+	char file_content[500];
+	char date_str[11], date_time_string[24], new_file_name[260], time_str[12];
+
+	get_date(date_str);
+	get_time(time_str);
+
+	strcpy(new_file_name, file_name);
+	strcat(new_file_name, ".c");
+
+	strcpy(date_time_string, date_str);
+	strcat(date_time_string, "-");
+	strcat(date_time_string, time_str);
+
+	sprintf(file_content, "/* File:         %s\n"
 		" *\n"
 		" * Author:       \n"
 		" *\n"
-		" * Date & time:  datetime\n"
+		" * Date & time:  %s\n"
 		" */\n"
 		"\n"
 		"#include <stdio.h>\n"
@@ -81,21 +93,9 @@ int make_csf(char *file_name) {
 		"    return 0;\n"
 		"}\n"
 		"\n"
-		"\n"
-	};
-	char date_str[11], date_time_string[24], new_file_name[260], time_str[12];
-
-	get_date(date_str);
-	get_time(time_str);
-
-	strcpy(new_file_name, file_name);
-	strcat(new_file_name, ".c");
-	strrep(file_content, "filename", new_file_name, file_content);
-
-	strcpy(date_time_string, date_str);
-	strcat(date_time_string, "-");
-	strcat(date_time_string, time_str);
-	strrep(file_content, "datetime", date_time_string, file_content);
+		"\n",
+		new_file_name, date_time_string
+	);
 
 	if (make_file(new_file_name, file_content)) {return 1;}
 
@@ -103,7 +103,7 @@ int make_csf(char *file_name) {
 }
 
 
-int make_dir(const char *dir_name) {
+static int make_dir(const char *dir_name) {
 	#ifdef __linux__
 		if (mkdir(dir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)) {goto makedir_error;}
 	#else
@@ -117,17 +117,18 @@ int make_dir(const char *dir_name) {
 
 
 int make_makefile(char *project_name, char *exe_name) {
-	char file_content[590] = {
-		"BINDIR=bin\n"
+	char file_content[590];
+
+	sprintf(file_content, "BINDIR=bin\n"
 		"OBJDIR=obj\n"
 		"SRCDIR=src\n"
 		"\n"
 		"OS=$(shell uname -o)\n"
 		"ifeq ($(OS), Msys)\n"
-		"BINFILE=exename.exe\n"
+		"BINFILE=%s.exe\n"
 		"endif\n"
 		"ifeq ($(OS), GNU/Linux)\n"
-		"BINFILE=exename\n"
+		"BINFILE=%s\n"
 		"endif\n"
 		"\n"
 		"BIN=$(BINDIR)/$(BINFILE)\n"
@@ -159,74 +160,31 @@ int make_makefile(char *project_name, char *exe_name) {
 		"\n"
 		"distclean: clean\n"
 		"\trmdir $(BINDIR) $(OBJDIR)\n"
-		"\n\n"
-	};
-
-	strrep(file_content, "exename", exe_name, file_content);	// For a weird reason, it only replace 'exename' from the string 'BINFILE=exename.exe'.
-	strrep(file_content, "exename", exe_name, file_content);	// The second one is used to replace 'exename' from the string 'BINFILE=exename'.
+		"\n\n",
+		exe_name, exe_name
+	);
 	if (make_file(project_name, file_content)) {return 1;}
 
 	return 0;
 }
 
 
-size_t strrep(const char *input_string, const char *old_string, const char *new_string, char output_string[]) {
-	bool is_old_string_found = false;
-	size_t buffer_size = strlen(old_string),
-		   input_str_size = strlen(input_string),
-		   new_str_size = strlen(new_string),
-		   old_str_size = buffer_size,
-		   result_str_size = input_str_size + 1;
-	char buffer[buffer_size], *result_string;
+int make_project(char *project_name, char *exe_name, char *c_source_file) {
+	char bin_dir_location[30], src_dir_location[30], src_file[30], makefile[30];
 
-	/* Set the size of result_string based on the length of input_string
-	 * and new_string. If new_string has the same length as old_string, use
-	 * the length of input_string as default size.
-	 */
+	if (make_dir(project_name)) {return 1;}
 
-	if (new_str_size > old_str_size || new_str_size < old_str_size) {
-		result_str_size = (input_str_size - old_str_size + new_str_size + 1);
-	}
-	result_string = malloc(sizeof(char) * result_str_size);
+	sprintf(bin_dir_location, "%s/bin", project_name);
+	sprintf(src_dir_location, "%s/src", project_name);
+	sprintf(src_file, "%s/src/%s", project_name, c_source_file);
+	sprintf(makefile, "%s/Makefile", project_name);
 
-	strcpy(buffer, EMPTY_STRING);
-	strcpy(result_string, EMPTY_STRING);
-	int buffer_count = 1, char_index = 0;
+	make_dir(bin_dir_location);
+	make_dir(src_dir_location);
+	make_csf(src_file);
+	make_makefile(makefile, exe_name);
 
-	while (char_index != input_str_size) {
-		strncat(buffer, &input_string[char_index], 1);
-
-		if (strcmp(old_string, buffer) == 0) {
-			strcat(result_string, new_string);
-			strcpy(buffer, EMPTY_STRING);
-			is_old_string_found = true;
-			buffer_count -= 1;
-		}
-		else if (buffer_count == buffer_size) {
-			strncat(result_string, &buffer[0], 1);
-			if (buffer_count > 1) {
-				memmove(buffer, buffer+1, (buffer_size - 1));
-			}
-			buffer[(buffer_size - 1)] = '\0';
-			buffer_count -= 1;
-		}
-		else {
-			// Do nothing here...
-		}
-		buffer_count++;
-		char_index++;
-	}
-
-	if (is_old_string_found == false) {
-		strcpy(output_string, "\0");	// old_string is not found, return NULL
-	}
-	else {
-		strncpy(output_string, result_string, result_str_size);
-		output_string[result_str_size] = '\0';
-	}
-	free(result_string);
-	result_string = NULL;
-	return result_str_size;
+	return 0;
 }
 
 
