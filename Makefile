@@ -4,10 +4,10 @@ SRCDIR=src
 
 OS=$(shell uname -o)
 ifeq ($(OS), Msys)
-BINFILE=cpps.exe
+BINFILE=cps.exe
 endif
 ifeq ($(OS), GNU/Linux)
-BINFILE=cpps
+BINFILE=cps
 endif
 
 BIN=$(BINDIR)/$(BINFILE)
@@ -41,9 +41,9 @@ clean:
 
 distclean: clean
 	rmdir $(OBJDIR) $(BINDIR)
-	rm CPPS-0.1.1-alpha.3-release.tar
-	rm CPPS-0.1.1-alpha.3-debug.tar
-	rm CPPS-0.1.1-alpha.3-source.tar
+	rm CPS-0.1.1-alpha.3-release.tar
+	rm CPS-0.1.1-alpha.3-debug.tar
+	rm CPS-0.1.1-alpha.3-source.tar
 
 
 build-test:
@@ -68,25 +68,25 @@ distclean-test:
 
 
 tar-source:
-	tar -cvf CPPS-0.1.1-alpha.3-source.tar include/sput-1.4.0/* src/*.c src/*.h .gitignore COPYING Makefile README.md
+	tar -cvf CPS-0.1.1-alpha.3-source.tar include/sput-1.4.0/* src/*.c src/*.h .gitignore COPYING Makefile README.md
 
 tar-release:
-	tar -cvf CPPS-0.1.1-alpha.3-release.tar bin/* COPYING README.md
+	tar -cvf CPS-0.1.1-alpha.3-release.tar bin/* COPYING README.md
 
 tar-debug:
-	tar -cvf CPPS-0.1.1-alpha.3-debug.tar bin/* COPYING README.md
+	tar -cvf CPS-0.1.1-alpha.3-debug.tar bin/* COPYING README.md
 
 
 install:
 	install -d ~/local/bin
-	install -d ~/local/share/cpps
+	install -d ~/local/share/cps
 	install bin/$(BINFILE) ~/local/bin
-	install COPYING ~/local/share/cpps
-	install README.md ~/local/share/cpps
+	install COPYING ~/local/share/cps
+	install README.md ~/local/share/cps
 
 uninstall:
 	rm ~/local/bin/$(BINFILE)
-	rm ~/local/share/cpps/*
-	rmdir ~/local/share/cpps
+	rm ~/local/share/cps/*
+	rmdir ~/local/share/cps
 
 

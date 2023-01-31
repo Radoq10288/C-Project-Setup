@@ -1,4 +1,4 @@
-# C Programming Project Setup (cpps)
+# C Project Setup (cps)
 <br><br>
 <img src="https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white" />
 <img src="https://img.shields.io/badge/C-00599C?style=flat&logo=c&logoColor=white" />
@@ -11,7 +11,7 @@
 A simple commandline C program to set up a C programming project. This is for programmers that prefer to do development using the terminal.<br>
 <br>
 __Sample output:__<br>
-C Programming Project<br>
+New C Project<br>
 &nbsp;&nbsp;├─ bin<br>
 &nbsp;&nbsp;├─ src<br>
 &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ sourcefile.c<br>
@@ -27,7 +27,7 @@ read <a target="_blank" href="https://opensource.com/article/20/8/gnu-windows-mi
 <br><br>
 
 ## How to build and install
-To build, compile, and install *cpps* in debug build, just run the following command:<br>
+To build, compile, and install *cps* in debug build, just run the following command:<br>
 
 ```
 $>make
@@ -36,7 +36,7 @@ $>make install
 ```
 <br>
 
-To build, compile, and install *cpps* in release build, run the following command:<br>
+To build, compile, and install *cps* in release build, run the following command:<br>
 ```
 $> make release
 ...
@@ -62,10 +62,10 @@ C:\MinGW\msys\1.0\home\<your-user-name>\local\bin
 <br><br>
 
 ## How to use
-To set up a C programming project:<br>
+To set up a C project:<br>
 
 ```
-$>cpps <project name> -f <file name> -e <executable name>
+$>cps <project name> -f <file name> -e <executable name>
 ```
 <br>
 
