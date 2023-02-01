@@ -182,9 +182,9 @@ static int make_project(char *project_name, char *exe_name, char *c_source_file)
 	
 	get_date(date_string);
 	get_time(time_string);
-	strcat(src_file, ".c");
 	
 	sprintf(src_file, "%s/src/%s", project_name, c_source_file);
+	strcat(src_file, ".c");
 	sprintf(content_string, c_file, src_file, date_string, time_string);
 	make_file(src_file, content_string);
 	
