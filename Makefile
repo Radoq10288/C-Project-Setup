@@ -40,7 +40,7 @@ clean:
 	rm -f $(OBJ) $(BINDIR)/*
 
 distclean: clean
-	rmdir $(OBJDIR) $(BINDIR)
+	rmdir $(OBJDIR)
 	rm CPS-0.1.1-alpha.3-release.tar
 	rm CPS-0.1.1-alpha.3-debug.tar
 	rm CPS-0.1.1-alpha.3-source.tar
