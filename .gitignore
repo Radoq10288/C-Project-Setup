@@ -2,6 +2,7 @@
 
 
 # Directory
+bin/
 include/
 obj/
 tests/
@@ -10,6 +11,5 @@ tests/
 *.exe
 *.gch
 *.o
-run-test.sh
 
 
