@@ -189,14 +189,15 @@ static int make_project(char *project_name, char *exe_name, char *c_source_file)
 	make_file(src_file, content_string);
 	
 	sprintf(makefile_name, "%s/Makefile", project_name);
-	sprintf(content_string, makefile, exe_name);
+	sprintf(content_string, makefile, exe_name, exe_name);
 	make_file(makefile_name, content_string);
 
 	return 0;
 }
 
 // This is only used for testing purposes.
-//#define ON_TEST_MODE
+// #define ON_TEST_MODE
+
 #ifndef ON_TEST_MODE
 
 int main(int argc, char *argv[]) {
