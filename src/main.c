@@ -268,6 +268,9 @@ int main(int argc, char *argv[]) {
 	return 0;
 
 	cpps_error:;
+	if (getopt_status == '?' || getopt_status == ':') {
+		fprintf(stderr, "Please see help by typing 'cps -h' or 'cps --help'.\n");
+	}
 	return 1;
 }
 
