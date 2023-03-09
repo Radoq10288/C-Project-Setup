@@ -87,15 +87,15 @@ static char makefile[650] = {
 
 static void help(void) {
 	printf("\nUsage:\n"
-			"    cps [Project Name] [Option]     For creating a C programming project.\n"
-			"    cps [Option]                    For other options to show help, version, etc.\n"
+			"    cps [Project Name] [Option] [argument]	To setup a C programming project.\n"
+			"    cps [Option]                    		For other options to show help, version, etc.\n"
 			"\n"
 			"Options:\n"
 			"    -e, --exe-name     Filename of the executable file to be created.\n"
 			"    -f, --filename     Filename of the C source file to be created.\n"
-			"    -h, --help         Show this help.\n"
+			"        --help         Show this help.\n"
 			"        --verbose      Show messages what is being done.\n"
-			"    -v, --version      Show current version of this software.\n");
+			"        --version      Show current version of this software.\n");
 }
 
 
@@ -221,13 +221,13 @@ int main(int argc, char *argv[]) {
             {"filename",	required_argument,	0,  		'f'},
             {"help",		no_argument,		0,  		'h'},
             {"version",		no_argument,		0,			'v'},
-			{"brief",		no_argument,       	&flag,		0},
-			{"verbose",		no_argument,		&flag,		1},
+			{"brief",		no_argument,       	&flag,		1},
+			{"verbose",		no_argument,		&flag,		2},
             {0,				0,					0,			0}
         };
 
 		opterr = 0;
-		getopt_status = getopt_long(argc, argv, ":e:f:hv", long_options, &option_index);
+		getopt_status = getopt_long(argc, argv, ":e:f:", long_options, &option_index);
         if (getopt_status == -1) {
 			break;
 		}
@@ -246,20 +246,10 @@ int main(int argc, char *argv[]) {
 				version();
 				goto skip_project_creation;
 			case '?':
-				if (optopt == '\0') {
-					fprintf(stderr, "cps\nError: Unknown long option of '%s'\n", argv[optind - 1]);
-				}
-				else {
-					fprintf(stderr, "cps\nError: Unknown short option of '-%c'\n", optopt);
-				}
+				fprintf(stderr, "cps\nError: Unknown option of '%s'\n", argv[optind - 1]);
 				goto cps_error;
 			case ':':
-				if (optopt =='\0') {
-					fprintf(stderr, "cps\nError: Long option '--%s' requires an argument.\n", long_options[optind - 1].name);
-				}
-				else {
-					fprintf(stderr, "cps\nError: Short option '-%c' requires an argument.\n", optopt);
-				}
+				fprintf(stderr, "cps\nError: Option '%s' requires an argument.\n", argv[optind - 1]);
 				goto cps_error;
         }
     }
@@ -268,7 +258,7 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "cps\nerror: Directory \"%s\" already exist.\n", project_name);
 		goto cps_error;
 	}
-	if (flag == 1) {printf("cps\nInfo: New project '%s' is created.\n", project_name);}
+	if (flag == 2) {printf("cps\nInfo: New project '%s' is created.\n", project_name);}
 	skip_project_creation:;
 	return 0;
 
