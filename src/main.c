@@ -195,11 +195,17 @@ static int make_project(char *project_name, char *exe_name, char *c_source_file)
 	return 0;
 }
 
+
 // This is only used for testing purposes.
 //#define ON_TEST_MODE
 #ifndef ON_TEST_MODE
 
 int main(int argc, char *argv[]) {
+	if (argv[1] == NULL) {
+		fprintf(stderr, "cps\nerror: No argument(s) specified.\ninfo: Please type 'cps --help' for guidance on proper usage.\n");
+		goto cps_error;
+	}
+
 	char c_source_filename[260] = "main", exe_filename[260], project_name[260];
 	int getopt_status;
 
