@@ -189,7 +189,7 @@ static int make_project(char *project_name, char *exe_name, char *c_source_file)
 	make_file(src_file, content_string);
 	
 	sprintf(makefile_name, "%s/Makefile", project_name);
-	sprintf(content_string, makefile, exe_name);
+	sprintf(content_string, makefile, exe_name, exe_name);
 	make_file(makefile_name, content_string);
 
 	return 0;
@@ -254,7 +254,6 @@ int main(int argc, char *argv[]) {
 				}
 				goto cps_error;
 			case ':':
-			printf("optopt=%c\n", optopt);
 				if (optopt =='\0') {
 					fprintf(stderr, "cps\nError: Long option '--%s' requires an argument.\n", long_options[optind - 1].name);
 				}
