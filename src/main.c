@@ -247,32 +247,33 @@ int main(int argc, char *argv[]) {
 				goto skip_project_creation;
 			case '?':
 				if (optopt == '\0') {
-					fprintf(stderr, "cpps\nError: Unknown long option of '%s'\n", argv[optind - 1]);
+					fprintf(stderr, "cps\nError: Unknown long option of '%s'\n", argv[optind - 1]);
 				}
 				else {
-					fprintf(stderr, "cpps\nError: Unknown short option of '-%c'\n", optopt);
+					fprintf(stderr, "cps\nError: Unknown short option of '-%c'\n", optopt);
 				}
-				goto cpps_error;
+				goto cps_error;
 			case ':':
+			printf("optopt=%c\n", optopt);
 				if (optopt =='\0') {
-					fprintf(stderr, "cpps\nError: Long option '--%s' requires an argument.\n", long_options[optind - 1].name);
+					fprintf(stderr, "cps\nError: Long option '--%s' requires an argument.\n", long_options[optind - 1].name);
 				}
 				else {
-					fprintf(stderr, "cpps\nError: Short option '-%c' requires an argument.\n", optopt);
+					fprintf(stderr, "cps\nError: Short option '-%c' requires an argument.\n", optopt);
 				}
-				goto cpps_error;
+				goto cps_error;
         }
     }
 
 	if (make_project(project_name, exe_filename, c_source_filename) != 0) {
-		fprintf(stderr, "cpps\nerror: Directory \"%s\" already exist.\n", project_name);
-		goto cpps_error;
+		fprintf(stderr, "cps\nerror: Directory \"%s\" already exist.\n", project_name);
+		goto cps_error;
 	}
-	if (flag == 1) {printf("cpps\nInfo: New project '%s' is created.\n", project_name);}
+	if (flag == 1) {printf("cps\nInfo: New project '%s' is created.\n", project_name);}
 	skip_project_creation:;
 	return 0;
 
-	cpps_error:;
+	cps_error:;
 	return 1;
 }
 
