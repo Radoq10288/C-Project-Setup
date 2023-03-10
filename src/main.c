@@ -103,7 +103,7 @@ static void help(void) {
 
 
 static void version(void) {
-	printf("\nCPS version 0.1.1-alpha.4, Copyright (C) 2022 Radoq10288\n"
+	printf("\nCPS version 0.1.2-alpha, Copyright (C) 2022 Radoq10288\n"
 			"CPS comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"
 			"This is free software, and you are welcome to redistribute it\n"
 			"under certain conditions; type `show c' for details.\n");
