@@ -39,7 +39,7 @@ static char c_file[500] = {
 };
 
 
-static char makefile[650] = {
+static char makefile[700] = {
 	"BINDIR=bin\n"
 	"OBJDIR=obj\n"
 	"SRCDIR=src\n"
@@ -81,26 +81,29 @@ static char makefile[650] = {
 	"\n"
 	"distclean: clean\n"
 	"\trmdir $(BINDIR) $(OBJDIR)\n"
+	"\n"
+	"run:\n"
+	"\t$(BIN)\n"
 	"\n\n"
 };
 
 
 static void help(void) {
 	printf("\nUsage:\n"
-			"    cps [Project Name] [Option]     For creating a C programming project.\n"
-			"    cps [Option]                    For other options to show help, version, etc.\n"
+			"    cps [Project Name] [Option] [argument]	To setup a C programming project.\n"
+			"    cps [Option]                    		For other options to show help, version, etc.\n"
 			"\n"
 			"Options:\n"
 			"    -e, --exe-name     Filename of the executable file to be created.\n"
 			"    -f, --filename     Filename of the C source file to be created.\n"
-			"    -h, --help         Show this help.\n"
+			"        --help         Show this help.\n"
 			"        --verbose      Show messages what is being done.\n"
-			"    -v, --version      Show current version of this software.\n");
+			"        --version      Show current version of this software.\n");
 }
 
 
 static void version(void) {
-	printf("\nCPS version 0.1.1-alpha.4, Copyright (C) 2022 Radoq10288\n"
+	printf("\nCPS version 0.1.2-alpha, Copyright (C) 2022 Radoq10288\n"
 			"CPS comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"
 			"This is free software, and you are welcome to redistribute it\n"
 			"under certain conditions; type `show c' for details.\n");
@@ -195,12 +198,18 @@ static int make_project(char *project_name, char *exe_name, char *c_source_file)
 	return 0;
 }
 
+
 // This is only used for testing purposes.
 // #define ON_TEST_MODE
 
 #ifndef ON_TEST_MODE
 
 int main(int argc, char *argv[]) {
+	if (argv[1] == NULL) {
+		fprintf(stderr, "cps\nerror: No argument(s) specified.\ninfo: Please type 'cps --help' for guidance on proper usage.\n");
+		goto cps_error;
+	}
+
 	char c_source_filename[260] = "main", exe_filename[260], project_name[260];
 	int getopt_status;
 
@@ -216,13 +225,13 @@ int main(int argc, char *argv[]) {
             {"filename",	required_argument,	0,  		'f'},
             {"help",		no_argument,		0,  		'h'},
             {"version",		no_argument,		0,			'v'},
-			{"brief",		no_argument,       	&flag,		0},
-			{"verbose",		no_argument,		&flag,		1},
+			{"brief",		no_argument,       	&flag,		1},
+			{"verbose",		no_argument,		&flag,		2},
             {0,				0,					0,			0}
         };
 
 		opterr = 0;
-		getopt_status = getopt_long(argc, argv, ":e:f:hv", long_options, &option_index);
+		getopt_status = getopt_long(argc, argv, ":e:f:", long_options, &option_index);
         if (getopt_status == -1) {
 			break;
 		}
@@ -241,36 +250,23 @@ int main(int argc, char *argv[]) {
 				version();
 				goto skip_project_creation;
 			case '?':
-				if (optopt == '\0') {
-					fprintf(stderr, "cpps\nError: Unknown long option of '%s'\n", argv[optind - 1]);
-				}
-				else {
-					fprintf(stderr, "cpps\nError: Unknown short option of '-%c'\n", optopt);
-				}
-				goto cpps_error;
+				fprintf(stderr, "cps\nError: Unknown option of '%s'\n", argv[optind - 1]);
+				goto cps_error;
 			case ':':
-				if (optopt =='\0') {
-					fprintf(stderr, "cpps\nError: Long option '--%s' requires an argument.\n", long_options[optind - 1].name);
-				}
-				else {
-					fprintf(stderr, "cpps\nError: Short option '-%c' requires an argument.\n", optopt);
-				}
-				goto cpps_error;
+				fprintf(stderr, "cps\nError: Option '%s' requires an argument.\n", argv[optind - 1]);
+				goto cps_error;
         }
     }
 
 	if (make_project(project_name, exe_filename, c_source_filename) != 0) {
-		fprintf(stderr, "cpps\nerror: Directory \"%s\" already exist.\n", project_name);
-		goto cpps_error;
+		fprintf(stderr, "cps\nerror: Directory \"%s\" already exist.\n", project_name);
+		goto cps_error;
 	}
-	if (flag == 1) {printf("cpps\nInfo: New project '%s' is created.\n", project_name);}
+	if (flag == 2) {printf("cps\nInfo: New project '%s' is created.\n", project_name);}
 	skip_project_creation:;
 	return 0;
 
-	cpps_error:;
-	if (getopt_status == '?' || getopt_status == ':') {
-		fprintf(stderr, "Please see help by typing 'cps -h' or 'cps --help'.\n");
-	}
+	cps_error:;
 	return 1;
 }
 

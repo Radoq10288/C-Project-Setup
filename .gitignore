@@ -11,5 +11,6 @@ tests/
 *.exe
 *.gch
 *.o
+check_mem_leak.sh
 
 
