@@ -39,7 +39,7 @@ static char c_file[500] = {
 };
 
 
-static char makefile[650] = {
+static char makefile[700] = {
 	"BINDIR=bin\n"
 	"OBJDIR=obj\n"
 	"SRCDIR=src\n"
@@ -81,6 +81,9 @@ static char makefile[650] = {
 	"\n"
 	"distclean: clean\n"
 	"\trmdir $(BINDIR) $(OBJDIR)\n"
+	"\n"
+	"run:\n"
+	"\t$(BIN)\n"
 	"\n\n"
 };
 
